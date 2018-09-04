@@ -2,11 +2,16 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.Label;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Game extends Application {
 
@@ -17,34 +22,47 @@ public class Game extends Application {
     public void start(Stage primaryStage) throws Exception {
         //Display board
         //Add tiles
-        GridPane gridPane = new GridPane();
-        gridPane.setGridLinesVisible(true);
-        gridPane.setMinSize(400, 400);
-        gridPane.setPadding(new Insets(10, 10, 10, 10));
-        gridPane.setVgap(5);
-        gridPane.setHgap(5);
+        createGame();
 
-        Rectangle rectangle = new Rectangle();
-        rectangle.setHeight(100);
-        rectangle.setWidth(100);
+        TilePane tilePane = new TilePane();
+        //tilePane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 
-        Rectangle rectangle1 = new Rectangle();
-        rectangle.setHeight(100);
-        rectangle.setWidth(100);
+        for(Tile tile : board){
+            tilePane.getChildren().add(new StackPane(tile, tile.getScoreText()));
+        }
 
-        Rectangle rectangle2 = new Rectangle();
-        rectangle.setHeight(100);
-        rectangle.setWidth(100);
-
-        //gridPane.add(rectangle, 0,0);
-        //gridPane.add(rectangle1, 1,1);
-        //gridPane.add(rectangle2, 2,2);
-        gridPane.add(new Text("heyy"), 1, 3);
-
-
-        Scene scene = new Scene(gridPane,400,400);
+        Scene scene = new Scene(tilePane,400,400);
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+
+    private void createGame(){
+        board = new Tile[15];
+
+        for(int i = 0; i < board.length; i++){
+            board[i] = new Tile();
+        }
+
+        addTile();
+        addTile();
+    }
+
+    private void addTile(){
+        ArrayList<Tile> empty = new ArrayList<>();
+
+        for(Tile tile : board){
+            if(tile.getScore() == 0)
+                empty.add(tile);
+        }
+
+        empty.get(ThreadLocalRandom.current().nextInt(empty.size())).setScore(getRandomTile());
+    }
+
+    private int getRandomTile(){
+        if(ThreadLocalRandom.current().nextDouble() > .5)
+            return 2;
+
+        return 4;
     }
 
 }
