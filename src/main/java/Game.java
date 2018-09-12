@@ -39,9 +39,8 @@ public class Game extends Application {
         }
     };
 
-
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
         stage = primaryStage;
         startGame();
     }
@@ -88,7 +87,7 @@ public class Game extends Application {
     }
 
     private int getRandomTile(){
-        if(ThreadLocalRandom.current().nextDouble() > .5)
+        if(ThreadLocalRandom.current().nextDouble() > .33)
             return 2;
 
         return 4;
@@ -96,33 +95,69 @@ public class Game extends Application {
 
     private void moveUp(){
         System.out.println("Up");
+
+        for(int i = 0; i < 4; i++){
+            for(int j = i + 4; j < board.length; j += 4){
+                if(board[j].getScore() == 0) continue;
+
+                for (int k = j - 4; k >= 0; k -= 4) {
+                    if (board[k].getScore() == 0){
+                        board[k].setScore(board[k+4].getScore());
+                        board[k+4].setScore(0);
+                    }
+                }
+            }
+        }
+
         addTile();
 
         if(checkGameOver()){
             gameOver();
-            System.out.println("RANNNN");
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            resetGame();
         }
     }
 
     private void moveDown(){
         System.out.println("Down");
+
+        for(int i = 0; i < 4; i++){ //Iterates through each column in the board
+            for(int j = i + 8; j >= 0 ; j -= 4){ //Finds empty cells
+                if(board[j].getScore() == 0) continue;
+
+                for (int k = j + 4; k <= 15; k += 4) { //Moves cells down
+                    if(board[k].getScore() == 0){
+                        board[k].setScore(board[k-4].getScore());
+                        board[k-4].setScore(0);
+                    }
+                }
+            }
+        }
+
         addTile();
+
+        if(checkGameOver()){
+            gameOver();
+        }
+
     }
 
     private void moveLeft(){
         System.out.println("Left");
         addTile();
+
+        if(checkGameOver()){
+            gameOver();
+        }
+
     }
 
     private void moveRight(){
         System.out.println("Right");
         addTile();
+
+        if(checkGameOver()){
+            gameOver();
+        }
+
     }
 
     private boolean checkGameOver(){
@@ -130,10 +165,6 @@ public class Game extends Application {
             if(tile.getScore() == 0) return false;
         }
         return true;
-    }
-
-    private void resetGame(){
-        startGame();
     }
 
     private void gameOver(){
