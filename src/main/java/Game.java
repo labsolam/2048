@@ -94,7 +94,6 @@ public class Game extends Application {
     }
 
     private void moveUp(){
-        System.out.println("Up");
 
         for(int i = 0; i < 4; i++){
             for(int j = i + 4; j < board.length; j += 4){
@@ -117,7 +116,6 @@ public class Game extends Application {
     }
 
     private void moveDown(){
-        System.out.println("Down");
 
         for(int i = 0; i < 4; i++){ //Iterates through each column in the board
             for(int j = i + 8; j >= 0 ; j -= 4){ //Finds empty cells
@@ -137,27 +135,50 @@ public class Game extends Application {
         if(checkGameOver()){
             gameOver();
         }
-
     }
 
     private void moveLeft(){
-        System.out.println("Left");
+
+        for(int i = 0; i < board.length; i += 4){
+            for(int j = i + 1; j < i + 4; j++ ){
+                if(board[j].getScore() == 0) continue;
+
+                for(int k = j; k > i; k--){ //Go backwards
+                    if (board[k - 1].getScore() == 0){
+                        board[k - 1].setScore(board[k].getScore());
+                        board[k].setScore(0);
+                    }
+                }
+            }
+        }
+
         addTile();
 
         if(checkGameOver()){
             gameOver();
         }
-
     }
 
     private void moveRight(){
-        System.out.println("Right");
+
+        for(int i = 0; i < board.length; i += 4){
+            for(int j = i + 2; j >= i; j-- ){
+                if(board[j].getScore() == 0) continue;
+
+                for(int k = j; k < i + 3; k++){ //Go backwards
+                    if (board[k + 1].getScore() == 0){
+                        board[k + 1].setScore(board[k].getScore());
+                        board[k].setScore(0);
+                    }
+                }
+            }
+        }
+
         addTile();
 
         if(checkGameOver()){
             gameOver();
         }
-
     }
 
     private boolean checkGameOver(){
